@@ -1,0 +1,201 @@
+:root {
+  --bg: rgba(242, 242, 247, 1);
+  --secondary-bg: rgba(255, 255, 255, 1);
+  --primary-blue: rgba(79, 70, 229, 1);
+  --text-primary: rgba(0, 0, 0, 1);
+  --text-secondary: rgba(128, 128, 128, 1);
+  --error-color: rgba(239, 68, 68, 1);
+  --border-color: rgba(209, 213, 219, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  overflow-x: hidden;
+  
+}
+
+body {
+  background-color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+    overflow-x: hidden;
+
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+p {
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+
+button {
+  all: unset;
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+}
+
+a {
+  color: var(--primary-blue);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  
+  &:focus {
+    border: none;
+    outline: none;
+  }
+}
+
+.button {
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  
+  &--primary {
+    background: var(--primary-blue);
+    color: white;
+    
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+  
+  &--secondary {
+    background: transparent;
+    color: var(--primary-blue);
+    border: 2px solid var(--primary-blue);
+    
+    &:hover {
+      background: var(--primary-blue);
+      color: white;
+    }
+  }
+}
+
+.input-field {
+  position: relative;
+  margin-bottom: 1.5rem;
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  
+  input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.75rem;
+    background: white;
+    font-size: 1rem;
+    
+    &:focus {
+      border-color: var(--primary-blue);
+    }
+    
+    &.error {
+      border-color: var(--error-color);
+    }
+    
+    &::placeholder {
+      color: var(--text-secondary);
+    }
+  }
+  
+  .error-message {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+  
+  .success-message {
+    color: var(--primary-blue);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  
+  input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    position: relative;
+    appearance: none;
+    
+    &:checked {
+      background: var(--primary-blue);
+      border-color: var(--primary-blue);
+      
+      &::after {
+        content: "✓";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: bold;
+      }
+    }
+  }
+  
+  label {
+    font-size: 1rem;
+    color: var(--text-primary);
+    cursor: pointer;
+  }
+}

@@ -1,0 +1,38 @@
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+box-sizing: border-box;
+  .main-back-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #000;
+  }
+
+  .main-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+    flex: 1;
+    text-align: center;
+  }
+
+  .header-icons {
+    display: flex;
+    gap: 16px;
+
+    .home-icon,
+    .profile-icon {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #4F46E5;
+    }
+  }
+}

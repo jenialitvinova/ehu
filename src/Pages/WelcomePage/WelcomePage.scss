@@ -1,0 +1,109 @@
+.welcome {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  padding: 20px;
+  position: relative;
+
+  &-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+  }
+
+  &__logo {
+    margin-bottom: 60px;
+
+    &-image {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+    }
+  }
+
+  &-title {
+    font-size: 32px;
+    font-weight: 600;
+    color: #000;
+    margin-top: 80px;
+    text-align: center;
+
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  &__button {
+    width: 100%;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  &__indicator {
+    position: absolute;
+    bottom: 1rem;
+    width: 8.375rem;
+    height: 0.25rem;
+    background: rgba(0, 0, 0, 1);
+    border-radius: 0.125rem;
+  }
+}
+
+.login-button {
+  background-color: #4F46E5;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #4338CA;
+  }
+}
+
+.register-button {
+  background-color: transparent;
+  color: #4F46E5;
+  border: 2px solid #4F46E5;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: #4F46E5;
+    color: white;
+  }
+}
+.logo-section{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.button-section{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+      margin-top: 40px;
+      gap:15px;
+
+}

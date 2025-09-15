@@ -1,0 +1,1 @@
+export { PasswordChangedPage } from "./PasswordChangedPage"

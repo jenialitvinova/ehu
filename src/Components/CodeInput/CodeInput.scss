@@ -1,0 +1,40 @@
+.code {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin: 2rem 0;
+
+  &-digit {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #D1D5DB;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background-color: white;
+    text-align: center;
+    &.filled {
+      border-color: var(--primary-blue);
+      background: rgba(59, 89, 182, 0.1);
+    }
+
+    &:last-child:not(.filled) {
+      border-color: var(--text-primary);
+      border-width: 3px;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #4F46E5;
+    }
+
+    &.active {
+      border-color: #000;
+      border-width: 2px;
+    }
+  }
+}
