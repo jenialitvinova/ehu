@@ -59,6 +59,12 @@ export const loansApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Loan", "Book"],
     }),
+
+    // Добавлено: GET /api/me/loans - Получение списка займов текущего пользователя
+    getMyLoans: builder.query<Loan[], void>({
+      query: () => "/api/me/loans",
+      providesTags: ["Loan"],
+    }),
   }),
 })
 
@@ -69,4 +75,5 @@ export const {
   useTakeBookByQRMutation,
   useMarkReturnByQRMutation,
   useConfirmReturnByQRMutation,
+  useGetMyLoansQuery, // Добавлено
 } = loansApi

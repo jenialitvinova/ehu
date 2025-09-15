@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { useAppSelector, useAppDispatch } from "../../store/hooks"
 import { removeFromReturnCart } from "../../store/slices/booksSlice"
-import { useGetMyLoansQuery } from "../../api/authApi"  // Изменено: используем хук из authApi
+import { useGetMyLoansQuery } from "../../api/loansApi"  // Изменено: импорт из loansApi
 import { useUpdateLoanMutation } from "../../api/loansApi"  // Добавлено: для обновления статуса займа
 import { MainHeader } from "../../Components/MainHeader"
 import "./LibraryPage.scss"

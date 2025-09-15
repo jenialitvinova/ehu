@@ -31,7 +31,11 @@ export function AdminPage() {
     year: new Date().getFullYear(),
   })
 
-  // ... existing access check ...
+  // Изменено: проверка на оба варианта роли админа
+  if (!user || (user.role !== "ADMIN" && user.role !== "admin")) {
+    navigate("/main")
+    return
+  }
 
   const handleAddBook = async () => {
     if (bookForm.title && bookForm.author) {

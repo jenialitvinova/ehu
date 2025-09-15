@@ -48,6 +48,7 @@ export function LoginPage() {
       // если backend вернул user внутри ответа (редко)
       if ((result as any).user) {
         const lr = result as any
+        console.log("Login result user:", lr.user) // Добавлено: логируем user
         dispatch(
           login({
             id: lr.user.id,
@@ -69,15 +70,16 @@ export function LoginPage() {
         
         // Декодируем токен для получения user данных
         const decoded = decodeJwt(token)
+        console.log("Decoded JWT:", decoded) // Добавлено: логируем декодированный токен
         if (decoded && decoded.sub) { // sub обычно содержит username или id
           // Предполагаем, что токен содержит user поля (firstName, lastName, email, role)
           // Если нет - запросите бэкендера добавить их в токен или вернуть user в ответе
           dispatch(
             login({
-              id: decoded.id || decoded.sub, // или decoded.userId если есть
+              id: decoded.id || decoded.sub,
               firstName: decoded.firstName || "Unknown",
               lastName: decoded.lastName || "User",
-              email: decoded.email || username, // fallback на введенный username
+              email: decoded.email || username,
               role: decoded.role || "USER",
             }),
           )

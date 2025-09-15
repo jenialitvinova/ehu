@@ -1,5 +1,5 @@
 import { baseApi } from "./baseApi"
-import type { LoginRequest, LoginResponse, RegisterRequest, User, Loan } from "./types"
+import type { LoginRequest, LoginResponse, RegisterRequest, User } from "./types"
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -26,24 +26,18 @@ export const authApi = baseApi.injectEndpoints({
         url: "/auth/login",
         method: "POST",
         body: {
-          username: credentials.username, // важно: отправляем username, не email
+          username: credentials.username,
           password: credentials.password,
         },
       }),
     }),
 
-    // GET current user/profile - используем, если register вернул только token
+    // GET /api/persons/me - Получение профиля текущего пользователя
     getProfile: builder.query<User, void>({
       query: () => "/api/persons/me", // <- проверьте в Swagger правильный путь ("/api/persons/me" или "/persons/me")
       providesTags: ["User"],
     }),
-
-    // GET /api/me/loans - Получение списка книг, взятых текущим пользователем
-    getMyLoans: builder.query<Loan[], void>({
-      query: () => "/api/me/loans",
-      providesTags: ["Loan"],
-    }),
   }),
 })
 
-export const { useRegisterMutation, useLoginMutation, useGetMyLoansQuery, useGetProfileQuery } = authApi
+export const { useRegisterMutation, useLoginMutation, useGetProfileQuery } = authApi

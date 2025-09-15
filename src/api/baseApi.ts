@@ -1,12 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import type { RootState } from "../store/store"
 
-// Base URL - should be configured based on environment
-// If VITE_API_URL is set, use it. Otherwise, in dev use relative URL ("")
-// so Vite dev server proxy (vite.config.ts) can forward requests and avoid CORS.
-const BASE_URL =
-  import.meta.env.VITE_API_URL ??
-  (import.meta.env.DEV ? "" : "http://localhost:8080")
+// Base URL - now uses VITE_API_URL for production
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080"
 
 export const baseApi = createApi({
   reducerPath: "api",
