@@ -3,6 +3,13 @@ import type { Loan, CreateLoanRequest, UpdateLoanRequest } from "./types"
 
 export const loansApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // GET /api/loans - все займы (админ)
+    getAllLoans: builder.query<Loan[], void>({
+      query: () => "/api/loans",
+      providesTags: (result) =>
+        result ? [...result.map(({ id }) => ({ type: "Loan" as const, id })), "Loan"] : ["Loan"],
+    }),
+
     // POST /api/loans - Оформление выдачи книги пользователю (только для администратора)
     createLoan: builder.mutation<Loan, CreateLoanRequest>({
       query: (loan) => ({
@@ -42,20 +49,20 @@ export const loansApi = baseApi.injectEndpoints({
       invalidatesTags: ["Loan", "Book"],
     }),
 
-    // POST /api/loans/qr/{qrToken}/mark-return - Отметить возврат книги по QR-коду
+    // PATCH /api/loans/qr/{qrToken}/mark-return - Отметить возврат книги по QR-коду
     markReturnByQR: builder.mutation<Loan, string>({
       query: (qrToken) => ({
         url: `/api/loans/qr/${qrToken}/mark-return`,
-        method: "POST",
+        method: "PATCH",  // Changed from POST to PATCH
       }),
       invalidatesTags: ["Loan", "Book"],
     }),
 
-    // POST /api/loans/qr/{qrToken}/confirm-return - Подтвердить возврат книги по QR-коду (только для администратора)
+    // PATCH /api/loans/qr/{qrToken}/confirm-return - Подтвердить возврат книги по QR-коду (только для администратора)
     confirmReturnByQR: builder.mutation<Loan, string>({
       query: (qrToken) => ({
         url: `/api/loans/qr/${qrToken}/confirm-return`,
-        method: "POST",
+        method: "PATCH",  // Изменено: с POST на PATCH, как указано в API
       }),
       invalidatesTags: ["Loan", "Book"],
     }),
@@ -65,15 +72,24 @@ export const loansApi = baseApi.injectEndpoints({
       query: () => "/api/me/loans",
       providesTags: ["Loan"],
     }),
+
+    returnBookByQR: builder.mutation({
+      query: (qrToken: string) => ({
+        url: `/api/loans/qr/${qrToken}/return`,  // Добавлено: полный путь с /api
+        method: 'POST',
+      }),
+    }),
   }),
 })
 
 export const {
+  useGetAllLoansQuery,
   useCreateLoanMutation,
   useUpdateLoanMutation,
   useBulkConfirmReturnsMutation,
   useTakeBookByQRMutation,
   useMarkReturnByQRMutation,
   useConfirmReturnByQRMutation,
-  useGetMyLoansQuery, // Добавлено
+  useGetMyLoansQuery,
+  useReturnBookByQRMutation,
 } = loansApi

@@ -35,7 +35,7 @@ export interface BorrowRequest {
   qrCode: string
 }
 
-interface BooksState {
+export interface BooksState { // Add export
   books: Book[]
   myBooks: Book[]
   cart: CartItem[]

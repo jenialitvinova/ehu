@@ -35,7 +35,7 @@ export function CodeInput({ code, onChange }: CodeInputProps) {
       {code.map((digit, index) => (
         <input
           key={index}
-          ref={(el) => (inputRefs.current[index] = el)}
+          ref={(el) => { inputRefs.current[index] = el }}
           type="text"
           value={digit}
           onChange={(e) => handleInputChange(index, e.target.value)}

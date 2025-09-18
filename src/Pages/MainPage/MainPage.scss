@@ -20,21 +20,22 @@
   justify-content: center;
   align-items: center;
 
-  .photo-circle {
-    width: 200px;
-    height: 200px;
-    border: 2px dashed #ccc;
-    border-radius: 50%;
+  .banner-container {
+    width: 100%;
+    max-width: 1000px; /* при необходимости подправь */
     display: flex;
-    align-items: center;
     justify-content: center;
-    background-color: transparent;
+    align-items: center;
+  }
 
-    .camera-icon {
-      height: 30px;
-      width: auto;
-      color: #ccc;
-    }
+  .banner-image {
+    width: 100%;
+    max-width: 800px;
+    height: 300px; /* прямоугольный размер */
+    border-radius: 16px; /* закруглённые углы */
+    object-fit: cover;
+    display: block;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
   }
 }
 
@@ -56,22 +57,22 @@
   cursor: pointer;
   transition: all 0.2s;
   box-sizing: border-box;
-  
+
   &.borrow {
-    background-color: #4F46E5;
+    background-color: #4f46e5;
     color: white;
 
     &:hover {
-      background-color: #4338CA;
+      background-color: #4338ca;
     }
   }
 
- &.return {
-    background-color: #4F46E5;
+  &.return {
+    background-color: #4f46e5;
     color: white;
 
     &:hover {
-      background-color: #4338CA;
+      background-color: #4338ca;
     }
   }
 
@@ -82,5 +83,99 @@
     &:hover {
       background-color: #b91c1c;
     }
+  }
+}
+
+/* QR scanner modal */
+.qr-scanner-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Центрированный попап */
+.qr-scanner-content {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(2, 6, 23, 0.25);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative; /* нужно для позиционирования крестика */
+}
+
+/* Кнопка закрытия в правом верхнем углу */
+.qr-scanner-content .close-button {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20; /* чтобы быть над содержимым модала */
+}
+
+.qr-scanner-content .close-button:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #111827;
+}
+
+/* Видео внутри попапа */
+.qr-scanner-content video {
+  width: 100%;
+  height: 320px;
+  border-radius: 8px;
+  background: #000;
+  object-fit: cover;
+}
+
+/* Кнопки и футер */
+.qr-scanner-content .close-scanner,
+.qr-scanner-content button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.qr-scanner-content .close-scanner[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Текст статуса */
+.qr-scanner-content .status-text {
+  font-size: 13px;
+  color: #374151;
+}
+
+/* Адаптив */
+@media (max-width: 520px) {
+  .qr-scanner-content {
+    padding: 16px;
+  }
+
+  .qr-scanner-content video {
+    height: 220px;
   }
 }

@@ -6,7 +6,7 @@ export const qrApi = baseApi.injectEndpoints({
     // GET /api/qr/{qrToken} - Получение статуса книги по QR-коду
     getQRBookStatus: builder.query<QRBookStatus, string>({
       query: (qrToken) => `/api/qr/${qrToken}`,
-      providesTags: (result, error, qrToken) => [{ type: "Book", id: qrToken }],
+      providesTags: (_result, _error, qrToken) => [{ type: "Book", id: qrToken }],
     }),
 
     // GET /l/{qrToken} - Короткая ссылка по QR-коду (редирект)

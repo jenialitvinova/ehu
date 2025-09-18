@@ -12,7 +12,7 @@ export const booksApi = baseApi.injectEndpoints({
     // GET /api/books/{id} - Получение информации о конкретной книге
     getBook: builder.query<Book, number>({
       query: (id) => `/api/books/${id}`,
-      providesTags: (result, error, id) => [{ type: "Book", id }],
+      providesTags: (_result, _error, id) => [{ type: "Book", id }],
     }),
 
     // POST /api/books - Добавление новой книги (только для администратора)
@@ -32,7 +32,7 @@ export const booksApi = baseApi.injectEndpoints({
         method: "PUT",
         body: book,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: "Book", id }],
+      invalidatesTags: (_result, _error, { id }) => [{ type: "Book", id }],
     }),
 
     // DELETE /api/books/{id} - Удаление книги (только для администратора)
@@ -47,7 +47,7 @@ export const booksApi = baseApi.injectEndpoints({
     // GET /api/books/qr/{qrToken} - Получение информации о книге по QR-токену
     getBookByQR: builder.query<Book, string>({
       query: (qrToken) => `/api/books/qr/${qrToken}`,
-      providesTags: (result, error, qrToken) => [{ type: "Book", id: qrToken }],
+      providesTags: (_result, _error, qrToken) => [{ type: "Book", id: qrToken }],
     }),
 
     // GET /api/admin/books - Получение списка книг для администратора

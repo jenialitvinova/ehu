@@ -2,8 +2,8 @@ import type React from "react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppDispatch } from "../../store/hooks"
-import { authApi } from "../../api/authApi" // <-- добавлено, путь может отличаться
-import { login } from "../../store/slices/authSlice" // пример, если login action в этом файле
+import { authApi } from "../../api/authApi"
+import { login } from "../../store/slices/authSlice"
 import { useRegisterMutation } from "../../api/authApi"
 import "./RegisterPage.scss"
 
@@ -12,14 +12,12 @@ export function RegisterPage() {
   const dispatch = useAppDispatch()
   const [registerUser, { isLoading, error }] = useRegisterMutation()
 
+  const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [username, setUsername] = useState("") // Новое состояние для имени пользователя
   const [localError, setLocalError] = useState("")
 
   const passwordsMatch = password && confirmPassword && password === confirmPassword
@@ -28,6 +26,9 @@ export function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLocalError("")
+
+    // Очищаем localStorage в начале, чтобы избежать остатков старых данных
+    localStorage.clear()
 
     // Валидация email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -47,12 +48,6 @@ export function RegisterPage() {
       return
     }
 
-    // Валидация имени и фамилии
-    if (!firstName.trim() || !lastName.trim()) {
-      setLocalError("Имя и фамилия обязательны")
-      return
-    }
-
     // Валидация имени пользователя
     if (!username.trim()) {
       setLocalError("Имя пользователя обязательно")
@@ -64,55 +59,39 @@ export function RegisterPage() {
         username,
         email,
         password,
-        firstName,
-        lastName,
       }).unwrap()
 
-      // Если backend вернул сразу user (LoginResponse)
-      if ((result as any).user) {
-        const lr = result as LoginResponse
-        dispatch(
-          login({
-            id: lr.user.id,
-            firstName: lr.user.firstName,
-            lastName: lr.user.lastName,
-            email: lr.user.email,
-            role: lr.user.role || "USER",
-          }),
-        )
-        // Сохраняем токен, если есть
-        if (lr.token) localStorage.setItem("token", lr.token)
-        navigate("/main")
-        return
-      }
-
-      // Если backend вернул только { token: "..." }
+      // Backend returns { token: "string" }, so handle token and fetch profile
       if ((result as any).token) {
         const token = (result as any).token as string
-        localStorage.setItem("token", token) // чтобы baseApi мог поставить Authorization
+        // Clear localStorage before setting new token
+        localStorage.clear()
+        localStorage.setItem("token", token) // Save token for baseApi to use
+
+        // Fetch user profile using the token
         try {
-          // вручную инициализируем запрос профиля через RTK endpoint
-          const profile = await dispatch(authApi.endpoints.getProfile.initiate(undefined)).unwrap()
+          const profile = await dispatch(authApi.endpoints.getMe.initiate(undefined)).unwrap()
           dispatch(
             login({
               id: profile.id,
-              firstName: profile.firstName,
-              lastName: profile.lastName,
+              firstName: profile.firstName || "",
+              lastName: profile.lastName || "",
               email: profile.email,
               role: profile.role || "USER",
+              token, // Include token in state
             }),
           )
-          navigate("/main")
+          navigate("/main") // Navigate to main page after login
           return
-        } catch (errProfile) {
-          console.error("Failed to load profile after register:", errProfile)
-          // fallback — перейти на логин (пользователь создан, но профиль не получен)
-          navigate("/login")
+        } catch (profileErr) {
+          console.error("Failed to fetch profile after registration:", profileErr)
+          setLocalError("Регистрация успешна, но не удалось загрузить профиль. Попробуйте войти вручную.")
+          navigate("/login") // Fallback to login page
           return
         }
       }
 
-      // иное поведение
+      // Fallback for unexpected responses
       setLocalError("Неожиданный ответ от сервера")
     } catch (err: any) {
       console.error("register error:", err)
@@ -131,25 +110,13 @@ export function RegisterPage() {
 
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
-            <label className="form-label">Имя</label>
+            <label className="form-label">Имя пользователя</label>
             <input
               type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="form-input"
-              placeholder="Ваше имя"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Фамилия</label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="form-input"
-              placeholder="Ваша фамилия"
+              placeholder="Уникальное имя пользователя"
               required
             />
           </div>
@@ -204,20 +171,7 @@ export function RegisterPage() {
             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">Имя пользователя</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="form-input"
-              placeholder="Уникальное имя пользователя"
-              required
-            />
-          </div>
-
           {passwordsMatch && <div className="password-match success">пароли совпадают</div>}
-
           {passwordsDontMatch && <div className="password-match error">пароли не совпадают</div>}
 
           {(localError || error) && (
@@ -232,10 +186,8 @@ export function RegisterPage() {
             disabled={
               !passwordsMatch ||
               isLoading ||
-              !firstName ||
-              !lastName ||
               password.length < 8 ||
-              !username // Добавлено условие для имени пользователя
+              !username
             }
           >
             {isLoading ? "Регистрация..." : "Зарегистрироваться"}

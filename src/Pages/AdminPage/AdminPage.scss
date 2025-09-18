@@ -232,40 +232,53 @@
     gap: 16px;
     margin-bottom: 20px;
 
-    .book-cover-small {
-      width: 80px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    .book-cover-small-wrapper {
+      width: 120px;
+      height: 160px;
+      position: relative;
       flex-shrink: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .book-cover-small {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .book-cover-overlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 8px 10px;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 14px;
+      text-align: center;
+      pointer-events: none;
+      box-sizing: border-box;
     }
 
     .book-details {
       flex: 1;
 
       h3 {
-        margin: 0 0 12px 0;
+        margin: 0 0 8px 0;
         color: #1f2937;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
-        line-height: 1.3;
+        line-height: 1.2;
       }
 
       p {
-        margin: 6px 0;
+        margin: 4px 0;
         color: #6b7280;
-        font-size: 14px;
-        line-height: 1.4;
-
-        strong {
-          color: #374151;
-          font-weight: 500;
-        }
-      }
-
-      p:last-child strong {
-        color: #059669;
+        font-size: 13px;
       }
     }
   }
@@ -383,71 +396,325 @@
   }
 }
 
+/* New styles for prettier create button and modals */
+.admin-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 20px;
+}
+
+.fancy-create-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #6D28D9 0%, #4F46E5 100%);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(79,70,229,0.18);
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease;
+    box-sizing: border-box;
+
+}
+
+.fancy-create-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(79,70,229,0.22);
+}
+
+.fancy-create-icon {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+/* Modal overlay and modal */
+.fancy-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  z-index: 1400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.fancy-modal {
+  background: #fff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 760px;
+  box-shadow: 0 20px 60px rgba(2,6,23,0.5);
+  /* Ограничиваем высоту модала под viewport и делаем внутреннюю прокрутку */
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* сохраняем обрезание внешних частей, прокрутка внутри body */
+  animation: modalEnter .16s ease;
+  /* make modal fit nicely on small screens */
+  box-sizing: border-box;
+  margin: 0 12px;
+}
+
+@keyframes modalEnter {
+  from { transform: translateY(6px); opacity: 0 }
+  to { transform: translateY(0); opacity: 1 }
+}
+
+.fancy-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid #eef2ff;
+  background: linear-gradient(180deg, rgba(79,70,229,0.06), rgba(255,255,255,0));
+}
+
+.fancy-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #111827;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 6px;
+  border-radius: 8px;
+
+  &:hover { background: rgba(0,0,0,0.04); }
+}
+
+.fancy-modal-body {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  /* Позволяем телу модала прокручиваться если контент широкий/высокий */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-grid .form-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e6edf8;
+  border-radius: 10px;
+  background: #fff;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.form-grid textarea.form-input {
+  grid-column: 1 / -1;
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* actions and buttons */
+.fancy-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+    box-sizing: border-box;
+
+}
+
+.btn {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn.primary {
+  background: #4F46E5;
+  color: #fff;
+}
+
+.btn.ghost {
+  background: #fff;
+  border: 1px solid #e6edf8;
+  color: #374151;
+}
+
+/* QR preview */
+.qr-preview {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  margin-top: 10px;
+}
+.view-btn{
+  background: #4F46E5;
+  color: #fff;
+  }
+
+.qr-img {
+  width: 140px;
+  height: 140px;
+  border-radius: 8px;
+  background: #fff;
+  padding: 6px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.qr-token-label {
+  font-size: 12px;
+  color: #374151;
+  word-break: break-all;
+}
+
+/* MOBILE: дополнительные правки для модалей и карточек */
 @media (max-width: 768px) {
   .admin-content {
-    padding: 15px;
+    padding: 12px;
   }
 
-  .requests-list {
+  .fancy-modal {
+    max-width: 96%;
+    margin: 0 8px;
+  }
+
+  .fancy-modal-header {
+    padding: 12px 14px;
+  }
+
+  .fancy-modal-body {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .form-grid .form-input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .form-grid textarea.form-input {
+    min-height: 80px;
+  }
+
+  .fancy-modal-actions {
     flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    box-sizing: border-box;
   }
 
-  .request-card {
-    padding: 16px;
+  .btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+        box-sizing: border-box;
+
   }
 
-  .borrowed-books-list {
+  .btn.primary {
+    padding: 12px;
+  }
+
+  .btn.ghost {
+    padding: 12px;
+  }
+
+  .qr-img {
+    width: 110px;
+    height: 110px;
+  }
+
+  .qr-preview {
     flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
   }
 
-  .borrowed-book-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-
-    .return-btn {
-      width: 100%;
-    }
+  .book-cover-small {
+    width: 64px;
+    height: 96px;
   }
 
   .books-management-list {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .book-management-card {
-    .book-info {
-      flex-direction: column;
-      text-align: center;
-
-      .book-cover-small {
-        align-self: center;
-      }
-    }
-
-    .book-actions {
-      flex-direction: column;
-    }
+    padding: 16px;
   }
 
-  .admin-tabs {
+  .book-actions {
     flex-direction: column;
-
-    button {
-      border-bottom: none;
-      border-left: 3px solid transparent;
-
-      &.active {
-        border-left-color: #4f46e5;
-        border-bottom-color: transparent;
-      }
-    }
-  }
-
-  .book-form {
-    padding: 20px;
-
-    .edit-actions {
-      flex-direction: column;
-    }
+    gap: 8px;
   }
 }
+
+.fancy-loans-btn {
+  margin-left: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fff 0%, #f7f7fb 100%);
+  color: #4F46E5;
+  border: 1px solid rgba(79,70,229,0.12);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s;
+  box-sizing: border-box;
+}
+.fancy-loans-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(79,70,229,0.06);
+  background: #f8f7ff;
+}
+.fancy-loans-text {
+  font-size: 14px;
+}
+
+/* Добавлено: сетка данных книги в модале */
+.book-data-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.book-data-grid .col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+

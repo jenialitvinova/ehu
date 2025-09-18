@@ -1,8 +1,8 @@
-"use client"
 import { useNavigate, useParams, useSearchParams } from "react-router-dom"
-import { useAppSelector, useAppDispatch } from "../../store/hooks"
-import { addToReturnCart, addToCart } from "../../store/slices/booksSlice"
+import {  useAppDispatch } from "../../store/hooks"
+import {  addToCart } from "../../store/slices/booksSlice"
 import { MainHeader } from "../../Components/MainHeader"
+import { useGetBookQuery } from "../../api/booksApi" // Добавлено: для получения данных книги
 import "./BookDetailPage.scss"
 
 export function BookDetailPage() {
@@ -11,25 +11,23 @@ export function BookDetailPage() {
   const { bookId } = useParams<{ bookId: string }>()
   const [searchParams] = useSearchParams()
   const fromCatalog = searchParams.get("from") === "catalog"
+  // const { user } = useAppSelector((state) => state.auth)  // Добавлено: селектор для user
 
-  const { books } = useAppSelector((state) => state.books)
+  // Добавлено: получаем актуальные данные книги из API
+  const { data: book, isLoading, error } = useGetBookQuery(bookId ? Number(bookId) : 0)
 
-  const book = books.find((b) => b.id === bookId)
-
-  if (!book) {
-    return <div>Книга не найдена</div>
-  }
+  if (isLoading) return <div>Загрузка...</div>
+  if (error || !book) return <div>Книга не найдена</div>
 
   const handleButtonClick = () => {
     if (book.id) {
       if (fromCatalog) {
         // From catalog - add to regular cart for borrowing
-        dispatch(addToCart(book.id))
+        dispatch(addToCart(String(book.id)))
         navigate("/catalog")
       } else {
-        // From library - add to return cart
-        dispatch(addToReturnCart(book.id))
-        navigate("/library")
+        // При просмотре книги из библиотеки кнопки "Сдать книгу" больше нет — возврат через главную
+        // (ничего не делаем)
       }
     }
   }
@@ -39,7 +37,10 @@ export function BookDetailPage() {
       <MainHeader />
       <div className="book-detail-content">
         <div className="book-cover-section">
-          <img src={book.cover || "/placeholder.svg"} alt={book.title} className="book-cover-large" />
+          <div className="book-cover-wrapper" aria-hidden={false}>
+            <img src="/images/book.png" alt={book.title} className="book-cover-large" />
+            <div className="book-title-overlay">{book.title}</div>
+          </div>
         </div>
 
         <div className="book-info-section">
@@ -47,12 +48,13 @@ export function BookDetailPage() {
           <p className="book-author">{book.author}</p>
           <p className="book-genre">{book.genre}</p>
           <p className="book-year">Год издания: {book.year}</p>
-          <p className="book-description">{book.description}</p>
         </div>
 
-        <button className="action-button" onClick={handleButtonClick}>
-          {fromCatalog ? "Добавить в корзину" : "Добавить в корзину возврата"}
-        </button>
+        {fromCatalog && (
+          <button className="action-button" onClick={handleButtonClick}>
+            Добавить в корзину
+          </button>
+        )}
       </div>
     </div>
   )

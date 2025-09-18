@@ -42,6 +42,12 @@
   border-radius: 8px;
   padding: 8px;
 
+  /* Центрируем содержимое карточки */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
   &.selected {
     border-color: #4F46E5;
     background-color: rgba(79, 70, 229, 0.1);
@@ -64,15 +70,42 @@
     }
   }
 
-  .book-cover {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    border-radius: 8px;
+  .book-cover2{
+    /* фиксированный размер обложки и центрирование */
     margin-bottom: 8px;
+
+    .book-cover-wrapper {
+
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .book-cover-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .book-cover-overlay {
+      /* Накладываем заголовок по центру обложки */
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+
+      .book-cover-overlay {
+        /* пустой — текст в .book-cover-overlay элементе */
+      }
+    }
   }
 
   .book-info {
+    text-align: center;
+
     .book-title {
       font-size: 12px;
       font-weight: 500;
@@ -149,7 +182,7 @@
   cursor: pointer;
   transition: background-color 0.2s;
   box-sizing: border-box;
-  
+
   &:hover {
     background-color: #4338CA;
   }

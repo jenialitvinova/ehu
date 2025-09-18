@@ -2,29 +2,19 @@ import type React from "react"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppDispatch } from "../../store/hooks"
-import { login, loginAsAdmin } from "../../store/slices/authSlice"
+import { login } from "../../store/slices/authSlice"
 import { useLoginMutation } from "../../api/authApi"
 import { authApi } from "../../api/authApi"
 import "./LoginPage.scss"
 
-// Функция для декодирования JWT (без верификации, только payload)
-function decodeJwt(token: string) {
-  try {
-    const payload = token.split('.')[1]
-    const decoded = JSON.parse(atob(payload))
-    return decoded
-  } catch (e) {
-    console.error("Failed to decode JWT:", e)
-    return null
-  }
-}
+
 
 export function LoginPage() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [loginUser, { isLoading, error }] = useLoginMutation()
 
-  const [username, setUsername] = useState("litvinova.evgeniya@student.ehu.lt")
+  const [username, setUsername] = useState("11111111")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
@@ -32,80 +22,54 @@ export function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     setLocalError("")
 
-    if (username === "admin@admin.admin" && password === "admin") {
-      dispatch(loginAsAdmin())
-      navigate("/main")
-      return
-    }
+    // Очищаем localStorage в начале, чтобы избежать остатков старых данных
+    localStorage.clear()
 
     try {
-      // send username (backend expects LoginRequest.username)
       const result = await loginUser({ username, password }).unwrap()
 
-      // если backend вернул user внутри ответа (редко)
-      if ((result as any).user) {
-        const lr = result as any
-        console.log("Login result user:", lr.user) // Добавлено: логируем user
-        dispatch(
-          login({
-            id: lr.user.id,
-            firstName: lr.user.firstName,
-            lastName: lr.user.lastName,
-            email: lr.user.email,
-            role: lr.user.role || "user",
-          }),
-        )
-        if (lr.token) localStorage.setItem("token", lr.token)
-        navigate("/main")
-        return
+      // extract token if present and persist
+      const token = (result as any).token || (result as any).access_token || (result as any).user?.token
+      console.log("Token from backend:", token)
+      if (token) {
+        localStorage.setItem("token", token)
+        console.log("Token saved to localStorage:", token)
       }
 
-      // если backend вернул только { token: "..." } - декодируем и берем user из токена
-      if ((result as any).token) {
-        const token = (result as any).token as string
-        localStorage.setItem("token", token)
-        
-        // Декодируем токен для получения user данных
-        const decoded = decodeJwt(token)
-        console.log("Decoded JWT:", decoded) // Добавлено: логируем декодированный токен
-        if (decoded && decoded.sub) { // sub обычно содержит username или id
-          // Предполагаем, что токен содержит user поля (firstName, lastName, email, role)
-          // Если нет - запросите бэкендера добавить их в токен или вернуть user в ответе
-          dispatch(
-            login({
-              id: decoded.id || decoded.sub,
-              firstName: decoded.firstName || "Unknown",
-              lastName: decoded.lastName || "User",
-              email: decoded.email || username,
-              role: decoded.role || "USER",
-            }),
-          )
-          navigate("/main")
-          return
-        } else {
-          // Если токен не содержит user данных - fallback на запрос профиля (если исправлен 500)
-          try {
-            const profile = await dispatch(authApi.endpoints.getProfile.initiate(undefined)).unwrap()
-            dispatch(
-              login({
-                id: profile.id,
-                firstName: profile.firstName,
-                lastName: profile.lastName,
-                email: profile.email,
-                role: profile.role || "USER",
-              }),
-            )
-            navigate("/main")
-            return
-          } catch (errProfile) {
-            console.error("Failed to load profile after login:", errProfile)
-            setLocalError("Не удалось загрузить профиль. Попробуйте позже.")
-            return
-          }
-        }
+      // optimistically set token in redux so baseApi can use it for /api/me
+      dispatch(
+        login({
+          id: (result as any).user?.id || 0,
+          firstName: (result as any).user?.firstName || "",
+          lastName: (result as any).user?.lastName || "",
+          email: (result as any).user?.email || username,
+          role: ((result as any).user?.role || "USER").toString().toUpperCase(),
+          token,
+        } as any),
+      )
+
+      // get authoritative profile from backend
+      try {
+        const profile = await dispatch(authApi.endpoints.getMe.initiate(undefined)).unwrap()
+        dispatch(
+          login({
+            id: profile.id,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            email: profile.email,
+            role: (profile.role || "USER").toString().toUpperCase(),
+            token,
+          } as any),
+        )
+        navigate((profile.role || "USER").toString().toUpperCase() === "ADMIN" ? "/admin" : "/main")
+        return
+      } catch (meErr) {
+        // fallback: use already-dispatched user + token
+        console.warn("GET /api/me failed, proceeding with token/user payload:", meErr)
+        navigate("/main")
+        return
       }
     } catch (err: any) {
       setLocalError(err.data?.message || "Ошибка входа")
@@ -185,10 +149,6 @@ export function LoginPage() {
           <button onClick={handleRegister} className="link-button">
             Зарегистрируйтесь
           </button>
-        </div>
-
-        <div className="admin-hint">
-          <small>Для входа как админ: admin@admin.admin / admin</small>
         </div>
       </div>
     </div>

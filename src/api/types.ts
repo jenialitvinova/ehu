@@ -6,10 +6,12 @@ export interface User {
   email: string
   role: "USER" | "ADMIN"
   createdAt: string
+  username?: string
+  login?: string
 }
 
 export interface LoginRequest {
-  email: string
+  username: string
   password: string
 }
 
@@ -19,30 +21,33 @@ export interface LoginResponse {
 }
 
 export interface RegisterRequest {
-  username: string  // Добавлено: обязательное поле для бэкенда
+  username: string
   email: string
   password: string
-  firstName: string
-  lastName: string
 }
 
 // Book types
+export interface CreateBookRequest {
+  title: string
+  author: string
+  year?: number
+  inventoryCode?: string
+  // Опционально: если фронт генерирует QR-токен локально, можно отправить его вместе с запросом
+  qrToken?: string
+}
+
 export interface Book {
   id: number
   title: string
   author: string
-  year: number
-  inventoryCode: string
-  qrToken: string
-  status: "AVAILABLE" | "BORROWED" | "PENDING_RETURN" | "LOST"
-  addedByAdminId: number
-}
-
-export interface CreateBookRequest {
-  title: string
-  author: string
-  year: number
-  inventoryCode: string
+  year?: number
+  inventoryCode?: string
+  cover?: string
+  description?: string
+  genre?: string
+  status?: string
+  // Опционально: QR-токен, может возвращать бэкенд или фронт при создании
+  qrToken?: string
 }
 
 export interface UpdateBookRequest {
@@ -50,7 +55,7 @@ export interface UpdateBookRequest {
   author?: string
   year?: number
   inventoryCode?: string
-  status?: "AVAILABLE" | "BORROWED" | "PENDING_RETURN" | "LOST"
+  status?: string
 }
 
 // Loan types
@@ -58,11 +63,13 @@ export interface Loan {
   id: number
   userId: number
   bookId: number
-  status: "ACTIVE" | "RETURN_REQUESTED" | "RETURNED" | "OVERDUE"
+  status: string
   loanDate: string
   dueDate: string
   returnDate?: string
   book: Book
+  user?: User
+  qrToken?: string
 }
 
 export interface CreateLoanRequest {
@@ -72,7 +79,7 @@ export interface CreateLoanRequest {
 }
 
 export interface UpdateLoanRequest {
-  status?: "ACTIVE" | "RETURN_REQUESTED" | "RETURNED" | "OVERDUE"
+  status?: string
   returnDate?: string
 }
 
@@ -81,7 +88,7 @@ export interface QRBookStatus {
   bookId: number
   title: string
   author: string
-  status: "AVAILABLE" | "BORROWED" | "PENDING_RETURN" | "LOST"
+  status: string
   qrToken: string
 }
 

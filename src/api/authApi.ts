@@ -10,11 +10,9 @@ export const authApi = baseApi.injectEndpoints({
         url: "/auth/register",
         method: "POST",
         body: {
-          username: credentials.username, // Отправляем username из формы
+          username: credentials.username,
           email: credentials.email,
           password: credentials.password,
-          firstName: credentials.firstName,
-          lastName: credentials.lastName,
         },
       }),
       invalidatesTags: ["User"],
@@ -34,10 +32,16 @@ export const authApi = baseApi.injectEndpoints({
 
     // GET /api/persons/me - Получение профиля текущего пользователя
     getProfile: builder.query<User, void>({
-      query: () => "/api/persons/me", // <- проверьте в Swagger правильный путь ("/api/persons/me" или "/persons/me")
+      query: () => "/api/persons/me",
+      providesTags: ["User"],
+    }),
+
+    // GET /api/me - Новый endpoint для профиля (используем для проверки роли)
+    getMe: builder.query<User, void>({
+      query: () => "/api/me",
       providesTags: ["User"],
     }),
   }),
 })
 
-export const { useRegisterMutation, useLoginMutation, useGetProfileQuery } = authApi
+export const { useRegisterMutation, useLoginMutation, useGetProfileQuery, useGetMeQuery } = authApi
