@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect, useCallback } from "react"
 
 export function useTimer(initialTime: number) {
@@ -7,10 +5,10 @@ export function useTimer(initialTime: number) {
   const [isActive, setIsActive] = useState(true)
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null
+    let interval: number | null = null
 
     if (isActive && timeLeft > 0) {
-      interval = setInterval(() => {
+      interval = window.setInterval(() => {
         setTimeLeft((time) => {
           if (time <= 1) {
             setIsActive(false)
