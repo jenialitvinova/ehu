@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react"
 import { MainHeader } from "../../Components/MainHeader"
 import { useGetAllLoansQuery, useUpdateLoanMutation, useConfirmReturnByQRMutation } from "../../api/loansApi"
 import QrScanner from "qr-scanner"  // Убедитесь, что библиотека установлена
+import { extractQrToken } from "../../utils/qr"
 import "./AdminLoansPage.scss"
 
 export function AdminLoansPage() {
@@ -105,9 +106,14 @@ export function AdminLoansPage() {
         videoRef.current,
         (result: QrScanner.ScanResult) => {
           if (!mounted) return
-          console.log("QR scanned for confirm return:", result)
-          scanner.stop()  // Синхронно останавливаем сканер
-          handleConfirmReturn(result.data)  // Отправляем на подтверждение
+          console.log("QR scanned for admin confirm:", result)
+          scanner.stop()
+          const token = extractQrToken(result.data)
+          if (token) {
+            handleConfirmReturn(token)
+          } else {
+            setManualQR(result.data ?? "")
+          }
         },
         {
           highlightScanRegion: true,
@@ -134,6 +140,12 @@ export function AdminLoansPage() {
       }
     }
   }, [showQRScanner, handleConfirmReturn])
+
+  // when user pastes/scans into manual input, normalize it too
+  const onManualChange = (val: string) => {
+    const token = extractQrToken(val)
+    setManualQR(token ?? val)
+  }
 
   if (isLoading) {
     return (
@@ -200,7 +212,7 @@ export function AdminLoansPage() {
                 <input
                   type="text"
                   value={manualQR}
-                  onChange={(e) => setManualQR(e.target.value)}
+                  onChange={(e) => onManualChange(e.target.value)}
                   placeholder="QR-токен"
                   style={{ width: "100%", padding: "8px", marginBottom: 8 }}
                 />
