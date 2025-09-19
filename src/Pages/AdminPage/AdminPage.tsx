@@ -50,18 +50,19 @@ export function AdminPage() {
   }
   const closeCreateModal = () => setCreateModalOpen(false)
 
-  const handleGenerateCreateQr = async () => {
-    const token = `QR-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+ const handleGenerateCreateQr = async () => {
+    const token = generateQrToken()
     setCreateQrToken(token)
     try {
-      const url = await QRCode.toDataURL(token)
-      setCreateQrDataUrl(url)
+      // Встраиваем в QR полный URL, чтобы при сканировании открывался сайт с параметром
+      const fullUrl = `https://ehu-lovat.vercel.app/l/${token}`
+      const dataUrl = await QRCode.toDataURL(fullUrl)
+      setCreateQrDataUrl(dataUrl)
     } catch (err) {
       console.error("QR generation error:", err)
-      setCreateQrDataUrl(null)
+      /*...*/
     }
   }
-
   const handleCreateSubmit = async () => {
     if (!createForm.title || !createForm.author) return alert("Заполните название и автора")
     setIsCreatingLocal(true)
