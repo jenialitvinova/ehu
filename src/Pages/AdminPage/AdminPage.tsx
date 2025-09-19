@@ -79,7 +79,8 @@ export function AdminPage() {
       const returnedToken = (newBook as any).qrToken || createQrToken
       if (returnedToken) {
         try {
-          const url = await QRCode.toDataURL(returnedToken)
+          const fullUrl = returnedToken.startsWith("http") ? returnedToken : `https://ehu-lovat.vercel.app/l/${returnedToken}`
+          const url = await QRCode.toDataURL(fullUrl)
           setCreateQrDataUrl(url)
         } catch {}
       }
@@ -156,7 +157,8 @@ export function AdminPage() {
       }
 
       try {
-        const url = await QRCode.toDataURL(qrToken)
+        const fullUrl = (qrToken || "").toString().startsWith("http") ? (qrToken as string) : `https://ehu-lovat.vercel.app/l/${qrToken}`
+        const url = await QRCode.toDataURL(fullUrl)
         if (mounted) setQrDataUrl(url)
       } catch (err) {
         console.warn("Failed to generate QR for selected book:", err)
@@ -312,7 +314,8 @@ export function AdminPage() {
         // Приоритет: используем qrToken из ответа бэка, иначе используем локально сгенерированный
         const returnedToken = (newBook as any).qrToken || (newBook as any).qr || qrToken
         try {
-          const url = await QRCode.toDataURL(returnedToken)
+          const fullUrl = (returnedToken || "").toString().startsWith("http") ? (returnedToken as string) : `https://ehu-lovat.vercel.app/l/${returnedToken}`
+          const url = await QRCode.toDataURL(fullUrl)
           setQrDataUrl(url)
           setSelectedBookId(newBook.id)
         } catch (qrErr) {
