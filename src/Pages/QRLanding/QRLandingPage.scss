@@ -1,0 +1,148 @@
+.qr-landing-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Используем те же классы, что и для модалей в MainPage/AdminPage */
+.qr-scanner-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.qr-scanner-content {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(2, 6, 23, 0.25);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+
+/* Крестик в правом верхнем углу */
+.qr-scanner-content .close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-scanner-content .close-button:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #111827;
+}
+
+.qr-scanner-content h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #111827;
+}
+
+/* Основной текст */
+.qr-scanner-content p {
+  margin: 0;
+  color: #374151;
+  font-size: 14px;
+}
+
+/* Кнопки в футере */
+.qr-scanner-content .close-scanner,
+.qr-scanner-content button {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.qr-scanner-content .close-scanner[disabled],
+.qr-scanner-content button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Если нужна карточка книги */
+.book-preview {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.book-preview .cover {
+  width: 72px;
+  height: 104px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.book-preview .meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.book-preview .meta .title {
+  font-weight: 600;
+  color: #111827;
+}
+
+.book-preview .meta .subtitle {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* Сообщение про необходимость авторизации */
+.login-prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.login-prompt .login-button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #4F46E5;
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@media (max-width: 520px) {
+  .qr-scanner-content {
+    padding: 16px;
+  }
+}
