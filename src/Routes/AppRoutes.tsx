@@ -12,6 +12,7 @@ import {
   ProfilePage,
   BookDetailPage,
   BookReturnedPage,
+  QRLandingPage
 } from "../Pages"
 import { CatalogPage } from "../Pages/CatalogPage"
 import { AdminPage } from "../Pages/AdminPage"
@@ -35,6 +36,7 @@ export function AppRoutes() {
       <Route path="/catalog" element={<ProtectedRoute><CatalogPage /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
       <Route path="/admin/loans" element={<ProtectedRoute><AdminLoansPage /></ProtectedRoute>} />
+      <Route path="/l/:qrToken" element={<QRLandingPage />} />
 
       {/* вспомогательные, можно оставить публичными по необходимости */}
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
