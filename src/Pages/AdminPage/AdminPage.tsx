@@ -8,6 +8,7 @@ import { MainHeader } from "../../Components/MainHeader"
 import "./AdminPage.scss"
 import QrScanner from "qr-scanner"
 import { useConfirmReturnByQRMutation } from "../../api/loansApi"
+import { extractQrToken } from "../../utils/qr"
 
 export function AdminPage() {
   const navigate = useNavigate()
@@ -395,7 +396,8 @@ export function AdminPage() {
           if (!mounted) return
           console.log("QR scanned for confirm return:", result)
           scanner.stop()
-          handleConfirmReturn(result.data)
+          const token = extractQrToken(result.data)
+          handleConfirmReturn(token ?? undefined)
         },
         {
           highlightScanRegion: true,
