@@ -1,6 +1,6 @@
 import type React from "react"
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { useAppDispatch } from "../../store/hooks"
 import { login } from "../../store/slices/authSlice"
 import { useLoginMutation } from "../../api/authApi"
@@ -10,6 +10,7 @@ import "./LoginPage.scss"
 
 
 export function LoginPage() {
+  const location = useLocation()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [loginUser, { isLoading, error }] = useLoginMutation()
@@ -63,12 +64,26 @@ export function LoginPage() {
             token,
           } as any),
         )
-        navigate((profile.role || "USER").toString().toUpperCase() === "ADMIN" ? "/admin" : "/main")
+        // Если пришли с защищённого пути — вернёмся туда
+        const from = (location.state as any)?.from
+        if (from) {
+          // location.state.from может быть Location или строкой
+          const target = typeof from === "string" ? from : from.pathname || from
+          navigate(target, { replace: true })
+        } else {
+          navigate((profile.role || "USER").toString().toUpperCase() === "ADMIN" ? "/admin" : "/main")
+        }
         return
       } catch (meErr) {
         // fallback: use already-dispatched user + token
         console.warn("GET /api/me failed, proceeding with token/user payload:", meErr)
-        navigate("/main")
+        const from = (location.state as any)?.from
+        if (from) {
+          const target = typeof from === "string" ? from : from.pathname || from
+          navigate(target, { replace: true })
+        } else {
+          navigate("/main")
+        }
         return
       }
     } catch (err: any) {
