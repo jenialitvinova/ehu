@@ -86,11 +86,22 @@ export function ProfilePage() {
           </div>
         </div>
 
-        {/* Общий блок действий: Моя библиотека + Выйти */}
-        <div className="profile-actions">
-          <button className="library-button" onClick={() => navigate("/library")}>
-            Моя библиотека
-          </button>
+        {/* Новая кнопка — перейти в "Моя библиотека" (скрыта для админа) */}
+        {user?.role?.toLowerCase() !== "admin" && (
+          <div className="library-link" style={{ marginTop: 12 }}>
+            <button
+              className="library-button"
+              onClick={() => {
+                navigate("/library")
+              }}
+            >
+              Моя библиотека
+            </button>
+          </div>
+        )}
+
+        {/* Add logout button */}
+        <div className="logout-section">
           <button className="logout-button" onClick={handleLogout}>
             Выйти
           </button>
