@@ -9,6 +9,7 @@ import "./MainPage.scss"
 import QrScanner from "qr-scanner"
 // (убрал WORKER_PATH — не поддерживается в новой версии, worker должен загружаться автоматически)
 import { useTakeBookByQRMutation, useMarkReturnByQRMutation } from "../../api/loansApi"
+import { extractQrToken } from "../../utils/qr"
 
 export function MainPage() {
   const navigate = useNavigate()
@@ -119,10 +120,16 @@ export function MainPage() {
         if (!mounted || scannedOnce) return
         console.log("QR scanned:", result)
         setScannedOnce(true)
-        // Останавливаем сканер сразу после первого скана
         try { if (scanner) scanner.stop() } catch {}
+        const token = extractQrToken(result.data)
+        if (!token) {
+          alert("Не удалось распознать токен из QR")
+          setIsProcessingScan(false)
+          setShowQRScanner(false)
+          return
+        }
         // Сохраняем в переменную и отправляем
-        handleQRScan(result.data)
+        handleQRScan(token)
       }
       scanner = new QrScanner(
         videoRef.current,
@@ -242,7 +249,14 @@ export function MainPage() {
         console.log("Return QR scanned:", result)
         setScannedReturnOnce(true)
         try { if (scanner) scanner.stop() } catch {}
-        handleReturnScan(result.data)
+        const token = extractQrToken(result.data)
+        if (!token) {
+          alert("Не удалось распознать токен из QR")
+          setIsProcessingReturn(false)
+          setShowReturnScanner(false)
+          return
+        }
+        handleReturnScan(token)
       }
       scanner = new QrScanner(
         returnVideoRef.current,
