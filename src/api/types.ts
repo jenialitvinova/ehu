@@ -86,10 +86,13 @@ export interface UpdateLoanRequest {
 // QR types
 export interface QRBookStatus {
   bookId: number
-  title: string
-  author: string
-  status: string
-  qrToken: string
+  title?: string
+  author?: string
+  year?: number
+  status?: string
+  canBorrow?: boolean
+  pendingReturn?: boolean
+  mine?: boolean
 }
 
 // API Error type
