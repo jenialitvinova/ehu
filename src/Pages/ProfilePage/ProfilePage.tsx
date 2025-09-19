@@ -88,7 +88,7 @@ export function ProfilePage() {
 
         {/* Новая кнопка — перейти в "Моя библиотека" (скрыта для админа) */}
         {user?.role?.toLowerCase() !== "admin" && (
-          <div className="library-link" style={{ marginTop: 12 }}>
+          <div className="library-link" >
             <button
               className="library-button"
               onClick={() => {
