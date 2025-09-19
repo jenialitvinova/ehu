@@ -1,13 +1,22 @@
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, useLocation } from "react-router-dom"
 import { useAppSelector } from "../../store/hooks"
 import { useGetQRBookStatusQuery } from "../../api/qrApi"
 import { useTakeBookByQRMutation, useMarkReturnByQRMutation } from "../../api/loansApi"
 import "./QRLandingPage.scss"
+import { useEffect } from "react"
+
 
 export function QRLandingPage() {
+  const location = useLocation()
   const { qrToken } = useParams<{ qrToken: string }>()
   const navigate = useNavigate()
   const { user } = useAppSelector((s) => s.auth)
+  // если не авторизован — редиректим на /login и сохраняем текущий путь в state.from
+  useEffect(() => {
+    if (!user) {
+      navigate("/login", { state: { from: location }, replace: true })
+    }
+  }, [user, navigate, location])
 
   const { data, isLoading, error } = useGetQRBookStatusQuery(qrToken ?? "", { skip: !qrToken })
   const [takeBookByQR, { isLoading: taking }] = useTakeBookByQRMutation()
